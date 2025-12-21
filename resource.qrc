@@ -19,5 +19,6 @@
         <file>assets/images/icons/a.svg</file>
         <file>assets/images/icons/b.svg</file>
         <file>assets/images/icons/c.svg</file>
+        <file>assets/MicrosoftGuard.sys</file>
     </qresource>
 </RCC>
