@@ -416,15 +416,48 @@ void memoryAssambly(std::vector<byte> asm_code)
 
 }
 
-bool encrypt(__int64 address, int value)
+bool encrypt(uint32_t address, int value)
 {
-#ifdef ISCHINA
-    return writeInt(address, value);
-#else
-    value = value + 4;
-    value = value ^ C_ENCRYPT_KEY;
-    return writeInt(address, value);
-#endif
+    uint32_t ecx = address;
+    int eax = readInt(C_ENCRYPT_BASE);
+    eax++;
+    int edx = eax;
+    edx = edx >> 8;
+    edx = (uint8_t)edx;
+    edx = readInt(edx * 2 + C_ENCRYPT_PARAM1);
+    writeInt(C_ENCRYPT_BASE,eax);
+    edx = (int16_t)edx;
+    eax = eax & 0xFF;
+    edx = (int16_t)edx;
+    edx = edx ^ (uint16_t)readInt(eax * 2 + C_ENCRYPT_PARAM2);
+    int esi = value;
+    eax = edx;
+    eax = (uint16_t)eax;
+    edx = esi >> 16;
+    edx = (int16_t)edx;
+    edx = edx + (int16_t)esi;
+    edx ^= (int16_t)eax;
+    int edi = edx;
+    edx = eax;
+    eax = eax << 16;
+    // eax = eax + edx;
+    eax |= edx;
+    esi = value;
+    eax ^= esi;
+    esi = address + 0x8;
+    writeInt(esi,eax);
+    eax = readInt(address);
+    esi = readInt(C_DECRYPT_BASE);
+    ecx = edi;
+    ecx = ecx << 16;
+    // ecx = ecx + edx;
+    ecx |= edx;
+    edx = eax;
+    edx = edx >> 16;
+    edx = readInt(esi + edx * 4 + 0x24);
+    eax = eax & 0xFFFF;
+    writeInt(edx + eax * 4 + 0x2114,ecx);
+    return true;
 }
 
 int decrypt(int encrypt_address) // 加密地址

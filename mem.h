@@ -65,7 +65,7 @@ namespace Mem
 
     void memoryAssambly(std::vector<byte>asm_code);
 
-    bool encrypt(__int64 address, int value);
+    bool encrypt(uint32_t address, int value);
 
     bool encrypt(__int64 address, float f_value);
 

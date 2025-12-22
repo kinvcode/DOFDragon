@@ -270,8 +270,8 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    int res = Mem::decrypt(Mem::readInt(C_USER_BASE) + C_USER_CUR_HP);
+    Mem::encrypt(Mem::readInt(C_USER_BASE) + C_USER_CUR_HP,100);
 
-    qDebug() << res;
+    qDebug() << 1;
 }
 

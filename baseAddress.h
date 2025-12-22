@@ -20,6 +20,9 @@
 
 #define C_USER_BASE 0x1AC790C // 人物指针基址
 #define C_DECRYPT_BASE 0x1B08A10 // 解密基址
+#define C_ENCRYPT_BASE 0x1B08A50 // 加密基址
+#define C_ENCRYPT_PARAM1 0x1851600 //加密参数1
+#define C_ENCRYPT_PARAM2 0x1851800 //加密参数2
 #define C_USER_CUR_HP 0x2BEC // 人物当前血量偏移
 
 #endif // BASEADDRESS_H
