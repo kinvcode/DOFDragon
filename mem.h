@@ -63,7 +63,7 @@ namespace Mem
 
     std::vector<byte> reverseBytes(std::vector<byte> data);
 
-    void memoryAssambly(std::vector<byte>asm_code);
+    int memoryAssambly(std::vector<byte>asm_code);
 
     bool encrypt(uint32_t address, int value);
 

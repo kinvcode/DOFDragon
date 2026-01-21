@@ -38,6 +38,7 @@ LIBS += $$PWD/library/msdk/msdkLib.lib \
 SOURCES += \
     driver/driverload.cpp \
     driver/mgapi.cpp \
+    gamecall.cpp \
     global.cpp \
     helper/rand.cpp \
     logviewer.cpp \
@@ -53,6 +54,7 @@ HEADERS += \
     driver/driverload.h \
     driver/inc.h \
     driver/mgapi.h \
+    gamecall.h \
     global.h \
     helper/rand.h \
     logviewer.h \

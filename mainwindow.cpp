@@ -7,6 +7,7 @@
 #include "driver/driverload.h"
 #include "process/process.h"
 #include "mem.h"
+#include "gamecall.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -270,8 +271,12 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    Mem::encrypt(Mem::readInt(C_USER_BASE) + C_USER_CUR_HP,100);
+    // Mem::encrypt(Mem::readInt(C_USER_BASE) + C_USER_CUR_HP,100);
 
-    qDebug() << 1;
+    // int value = Mem::memoryAssambly({0xFF, 0x15, 0x88, 0xA5, 0x55, 0x01});
+    // GameCall::storeCall();
+    Mem::encrypt(0x30EAA508,1);
+
+    // qDebug() << value;
 }
 

@@ -18,6 +18,9 @@
 #define C_ENCRYPT_KEY 0x1F2A025C // 加解密秘钥
 #define C_ENCRYPT_INT64_KEY 0x1F2A015C4BFA2B1C // 加解密八字节秘钥
 
+#define C_EMPTY_ADDRESS 0x19E3000 // 空白地址
+#define C_ASM_HOOK 0x011A5170 // 汇编HOOK地址
+#define C_GET_TIME_BASE 0x0155A588 // 获取时间CALL
 #define C_USER_BASE 0x1AC790C // 人物指针基址
 #define C_DECRYPT_BASE 0x1B08A10 // 解密基址
 #define C_ENCRYPT_BASE 0x1B08A50 // 加密基址

@@ -411,9 +411,69 @@ std::vector<byte> reverseBytes(std::vector<byte> data)
     return new_data;
 }
 
-void memoryAssambly(std::vector<byte> asm_code)
+int memoryAssambly(std::vector<byte> asm_code)
 {
+    // 汇编HOOK地址
+    __int64 C_ASM_CALL = C_ASM_HOOK;
+    // HOOK数据和原始数据
+    std::vector<byte>HOOKdata, HOOKraw;
 
+    //异步执行
+    bool asyncExecute = false;
+
+    //汇编中转,空白地址,判断地址
+    __int64 asmTransfer, asm_code_address, logicAddress, asm_result, HOOKasm, HOOKret;
+
+    asmTransfer      = C_EMPTY_ADDRESS;		   // HOOK代码
+    logicAddress     = C_EMPTY_ADDRESS + 0x70; // 判断存放
+    asm_result       = C_EMPTY_ADDRESS + 0x74; // 结果存放
+    asm_code_address = C_EMPTY_ADDRESS + 0xC0; // 汇编地址
+
+    // 此处使用锁
+    if (asyncExecute) {
+        return 0;
+    }
+
+    asyncExecute = true;
+    HOOKasm = C_ASM_CALL;
+    HOOKret = HOOKasm + 15; // HOOK返回位置
+
+    HOOKraw = makeByteArray({0x55, 0x8B, 0xEC, 0xFF, 0x15, 0x88, 0xA5, 0x55, 0x01}); // 获取HOOK处原始代码
+
+    HOOKdata = makeByteArray({0x55, 0x8B, 0xEC, 0xFF, 0x15, 0x88, 0xA5, 0x55, 0x01});
+    HOOKdata = HOOKdata + makeByteArray({ 0x50, 0x55, 0xB8, 0x70, 0x30, 0x9E, 0x01, 0x81, 0x38, 0x01, 0x00, 0x00, 0x00});
+    HOOKdata = HOOKdata + makeByteArray({0x75, 0x0E, 0xB8, 0xC0, 0x30, 0x9E, 0x01, 0xFF, 0xD0});
+    HOOKdata = HOOKdata + makeByteArray({0xB9, 0x74, 0x30, 0x9E, 0x01, 0x89, 0x01 });
+    HOOKdata = HOOKdata + makeByteArray({0xB8, 0x70, 0x30, 0x9E, 0x01, 0xC7, 0x00, 0x00, 0x00, 0x00, 0x00});
+    HOOKdata = HOOKdata + makeByteArray({0x5D, 0x58, 0xB9, 0x79, 0x51, 0x1A, 0x01});
+    HOOKdata = HOOKdata + makeByteArray({0xFF, 0xE1, 0x90});
+
+    // 如果HOOK代码没有数据则写入HOOK代码
+    if (readInt(asmTransfer) == 0 || true)
+    {
+        writeByteArray(asmTransfer, HOOKdata);
+    }
+
+    // 汇编地址写入汇编数据
+    writeByteArray(asm_code_address, asm_code + makeByteArray({ 195 })); // 写入执行CALL代码
+
+    // 开始HOOK
+    writeByteArray(HOOKasm, makeByteArray({0xB8, 0x00, 0x30, 0x9E, 0x01, 0xFF, 0xE0, 0x90, 0x90})); // HOOK汇编
+
+    // 执行汇编
+    writeInt(logicAddress, 1);
+    while (readInt(logicAddress) == 1)
+    {
+        ProcessHelper::programDelay(5);
+        ProcessHelper::handleEvents();
+    }
+
+    int call_result = readInt(asm_result);
+
+    // 汇编代码重置
+    writeByteArray(asm_code_address, makeEmptyByteArray((int)asm_code.size() + 16));
+
+    return call_result;
 }
 
 bool encrypt(uint32_t address, int value)
@@ -440,7 +500,6 @@ bool encrypt(uint32_t address, int value)
     int edi = edx;
     edx = eax;
     eax = eax << 16;
-    // eax = eax + edx;
     eax |= edx;
     esi = value;
     eax ^= esi;
@@ -450,7 +509,6 @@ bool encrypt(uint32_t address, int value)
     esi = readInt(C_DECRYPT_BASE);
     ecx = edi;
     ecx = ecx << 16;
-    // ecx = ecx + edx;
     ecx |= edx;
     edx = eax;
     edx = edx >> 16;
